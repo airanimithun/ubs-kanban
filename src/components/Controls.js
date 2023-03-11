@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const Controls = ({ createNewTask, selectedTask }) => {
+const Controls = ({ createNewTask, selectedTask, deleteTask, moveTaskForward, moveTaskBackward }) => {
   const [newTaskName, setNewTaskName] = useState('');
 
   return (
@@ -19,10 +19,10 @@ const Controls = ({ createNewTask, selectedTask }) => {
         </button>
       </div>
       <div className="actions-container">
-        <input className="selected-task-text" value={ selectedTask } placeholder="Selected Task" readOnly={true} />
-        <button className="move-forward-btn">Move Forward</button>
-        <button className="move-backword-btn">Move Backword</button>
-        <button className="delete-task-btn">Delete Task</button>
+        <input className="selected-task-text" value={ selectedTask?.name || '' } placeholder="Selected Task" readOnly={true} />
+        <button className="move-backword-btn" onClick={moveTaskBackward}>{`< Move Backword`}</button>
+        <button className="move-forward-btn" onClick={moveTaskForward}>{`Move Forward >`}</button>
+        <button className="delete-task-btn" onClick={() => deleteTask()}>Delete Task</button>
       </div>
     </div>
   )

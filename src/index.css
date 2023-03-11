@@ -62,3 +62,16 @@ code {
 .actions-container > button {
   margin-right: 1rem;
 }
+
+.done > .task {
+  text-decoration: line-through;
+  background-color: greenyellow;
+}
+
+.todo > .task {
+  background-color: pink;
+}
+
+.in-progress > .task {
+  background-color: rgb(203, 96, 96);
+}

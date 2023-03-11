@@ -1,11 +1,11 @@
 import Tasks from "./Tasks";
 
-const Stage = ({ stageName, tasks, onSelectTask }) => {
-  console.log('task', tasks);
+const Stage = ({ name, displayName, tasks, onSelectTask, stageIndex }) => {
+
   return (
-    <div key={stageName} className="stage">
-      <h3 className="stage-name">{stageName}</h3>
-      {tasks?.map(task => <Tasks key={stageName} {...task} onSelectTask={onSelectTask} />) }
+    <div key={name} className={`stage ${name}`}>
+      <h3 className="stage-name">{displayName}</h3>
+      {tasks?.map(task => <Tasks key={task.id} {...task} stageIndex={stageIndex} onSelectTask={onSelectTask} />) }
     </div>
   )
 };

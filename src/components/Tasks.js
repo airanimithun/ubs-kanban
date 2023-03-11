@@ -1,8 +1,8 @@
 
-const Tasks = ({ name, id, onSelectTask }) => {
+const Tasks = ({ name, id, onSelectTask, stageIndex }) => {
   return (
-    <div className="task" onClick={() => onSelectTask({id, name})}>
-      {name}
+    <div className="task" onClick={() => onSelectTask({ id, name, stageIndex })}>
+      <h3>{name}</h3>
     </div>
   )
 };
