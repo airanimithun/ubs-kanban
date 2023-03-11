@@ -2,13 +2,21 @@ import Stage from "./Stage"
 import { useState } from "react";
 import Controls from './Controls';
 
+/**
+ * 
+ * Approach:
+ * Maintain global board state and pass them to child component
+ * Manage CRUD operations
+ * Pass states to the children
+ * Handle border conditions like moving after Done or Backlog
+ * 
+ */
 const Board = () => {
-  // const stages = ['backlog', 'todo', 'onGoing', 'done'];
   const tasksObj = [
-    [{name: 'backlog', displayName: 'Backlog'}, []],
-    [{name: 'todo', displayName: 'Todo'}, []],
-    [{name: 'in-progress', displayName: 'In Progress'}, []],
-    [{name: 'done', displayName: 'Done'}, []],
+    {name: 'backlog', displayName: 'Backlog', tasks: []},
+    {name: 'todo', displayName: 'Todo', tasks: []},
+    {name: 'in-progress', displayName: 'In Progress', tasks: []},
+    {name: 'done', displayName: 'Done', tasks: []},
   ];
   const [allTask, setAllTasks] = useState(tasksObj);
   const [selectedTask, setSelectedTask] = useState({});
@@ -19,22 +27,21 @@ const Board = () => {
     }
     const tempTaskObj = [...allTask];
 
-    tempTaskObj[0][1].push({ id: Date.now(), name: taskName });
+    tempTaskObj[0]?.tasks?.push({ id: Date.now(), name: taskName });
 
     setAllTasks(tempTaskObj);
   };
 
   const deleteTask = () => {
-    // selectedTask
     if (!selectedTask) {
       return;
     }
     const { id, stageIndex } = selectedTask;
-    let selectedTasksArr = allTask[stageIndex][1];
+    let selectedTasksArr = allTask[stageIndex].tasks;
     const tempAllTask = [...allTask];
 
     selectedTasksArr = selectedTasksArr.filter(task => task.id !== id);
-    tempAllTask[stageIndex][1] = selectedTasksArr;
+    tempAllTask[stageIndex].tasks = selectedTasksArr;
     setAllTasks(tempAllTask);
     setSelectedTask({});
   };
@@ -48,12 +55,12 @@ const Board = () => {
     if (stageIndex === undefined || id === undefined) {
       return;
     }
-    let selectedTasksArr = allTask[stageIndex][1];
+    let selectedTasksArr = allTask[stageIndex].tasks;
     const tempAllTask = [...allTask];
     selectedTasksArr = selectedTasksArr.filter(task => task.id !== id);
 
-    tempAllTask[stageIndex][1] = selectedTasksArr;
-    tempAllTask[newIndex][1].push(selectedTask);
+    tempAllTask[stageIndex].tasks = selectedTasksArr;
+    tempAllTask[newIndex].tasks.push(selectedTask);
     setAllTasks(tempAllTask);
     setSelectedTask({});
   };
@@ -70,7 +77,7 @@ const Board = () => {
   const moveTaskBackward = () => {
     const { stageIndex } = selectedTask;
 
-    if (stageIndex === tasksObj.length - 1) {
+    if (stageIndex === 0) {
       return;
     }
     moveTask(stageIndex - 1);
@@ -78,9 +85,23 @@ const Board = () => {
 
   return (
     <>
-      <Controls createNewTask={createNewTask} selectedTask={selectedTask} moveTaskForward={moveTaskForward} moveTaskBackward={moveTaskBackward} deleteTask={deleteTask} />
-      <div className="board">
-        {allTask.map((stage, index) => <Stage key={stage[0].name} stageIndex={index} {...stage[0]} tasks={stage[1]} onSelectTask={onSelectTask} />)}
+      <Controls
+        createNewTask={createNewTask}
+        selectedTask={selectedTask}
+        moveTaskForward={moveTaskForward}
+        moveTaskBackward={moveTaskBackward}
+        deleteTask={deleteTask} />
+      <div
+        className="board">
+        {
+          allTask.map((stage, index) => (
+            <Stage
+              key={stage.name}
+              stageIndex={index}
+              {...stage}
+              onSelectTask={onSelectTask}
+            />))
+        }
       </div>
     </>
   )
