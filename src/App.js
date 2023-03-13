@@ -1,12 +1,15 @@
 import './App.css';
 import Board from './components/Board';
+import { TasksProvider } from './context/TasksProvider';
 
 
 function App() {
   
   return (
     <div>
-      <Board />
+      <TasksProvider>
+        <Board />
+      </TasksProvider>
     </div>
   );
 }
