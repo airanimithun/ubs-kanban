@@ -1,6 +1,5 @@
-import Stage from "./Stage"
 import Controls from './Controls';
-import { useListTasks } from "../context/TasksProvider";
+import TaskBoard from './TaskBoard';
 
 /**
  * 
@@ -12,22 +11,10 @@ import { useListTasks } from "../context/TasksProvider";
  * 
  */
 const Board = () => {
-  const [allTask] = useListTasks();
-  
   return (
     <>
       <Controls />
-      <div
-        className="board">
-        {
-          allTask.map((stage, index) => (
-            <Stage
-              key={stage.name}
-              stageIndex={index}
-              {...stage}
-            />))
-        }
-      </div>
+      <TaskBoard />      
     </>
   )
 };
