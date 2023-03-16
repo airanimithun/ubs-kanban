@@ -1,14 +1,10 @@
-import React, { useContext, createContext, useState } from 'react';
+import React, { useContext, createContext, useState, useReducer } from 'react';
+import reducer from '../reducers/TaskReducer';
 
 const ListTasksContext = createContext();
-const SelectedTaskContext = createContext();
 
 export const useListTasks = () => {    
     return useContext(ListTasksContext);
-}
-
-export const useSelectedTask = () => {
-    return useContext(SelectedTaskContext);
 }
 
 export const tasksObj = [
@@ -18,18 +14,12 @@ export const tasksObj = [
     {name: 'done', displayName: 'Done', tasks: []},
 ];
 
-export const TasksProvider = ({children}) => { 
-    
-    const [allTask, setAllTasks] = useState(tasksObj);
+export const TasksProvider = ({children}) => {    
+    const [allTask, dispatch] = useReducer(reducer, tasksObj);
     const [selectedTask, setSelectedTask] = useState({});
-    
     return(
-        <ListTasksContext.Provider value={[allTask, setAllTasks]}>
-            <SelectedTaskContext.Provider value={[selectedTask, setSelectedTask]}>
-                {children}
-            </SelectedTaskContext.Provider>
+        <ListTasksContext.Provider value={[allTask, dispatch, selectedTask, setSelectedTask]}>
+            {children}
         </ListTasksContext.Provider>
     )
-    
-
 }

@@ -1,68 +1,22 @@
 import { useState } from "react";
-import { useListTasks, useSelectedTask, tasksObj } from "../context/TasksProvider";
+import { useListTasks } from "../context/TasksProvider";
 
 const Controls = () => {
 
   const [newTaskName, setNewTaskName] = useState('');
-  const [allTask, setAllTasks] = useListTasks();
-  const [selectedTask, setSelectedTask] = useSelectedTask();
+  const [, dispatch, selectedTask] = useListTasks();
 
-  const createNewTask = (taskName) => {
-    if (!taskName) {
+  const createNewTask = (e) => {
+    e.preventDefault();
+    if (!newTaskName) {
       return;
     }
-    const tempTaskObj = [...allTask];
-
-    tempTaskObj[0]?.tasks?.push({ id: Date.now(), name: taskName });
-
-    setAllTasks(tempTaskObj);
+    dispatch({type:'create', payload: newTaskName})
   };
 
-  const deleteTask = () => {
-    if (!selectedTask) {
-      return;
-    }
-    const { id, stageIndex } = selectedTask;
-    let selectedTasksArr = allTask[stageIndex].tasks;
-    const tempAllTask = [...allTask];
-
-    selectedTasksArr = selectedTasksArr.filter(task => task.id !== id);
-    tempAllTask[stageIndex].tasks = selectedTasksArr;
-    setAllTasks(tempAllTask);
-    setSelectedTask({});
-  };
-
-  const moveTask = (newIndex) => {
-    const { id, stageIndex } = selectedTask;
-    if (stageIndex === undefined || id === undefined) {
-      return;
-    }
-    let selectedTasksArr = allTask[stageIndex].tasks;
-    const tempAllTask = [...allTask];
-    selectedTasksArr = selectedTasksArr.filter(task => task.id !== id);
-
-    tempAllTask[stageIndex].tasks = selectedTasksArr;
-    tempAllTask[newIndex].tasks.push(selectedTask);
-    setAllTasks(tempAllTask);
-    setSelectedTask({});
-  };
-
-  const moveTaskForward = () => {
-    const { stageIndex } = selectedTask;
-
-    if (stageIndex === tasksObj.length - 1) {
-      return;
-    }
-    moveTask(stageIndex + 1);
-  };
-
-  const moveTaskBackward = () => {
-    const { stageIndex } = selectedTask;
-
-    if (stageIndex === 0) {
-      return;
-    }
-    moveTask(stageIndex - 1);
+  const deleteTask = (e) => {
+    e.preventDefault();
+    dispatch({type:'delete', payload: selectedTask})
   };
 
   return (
@@ -75,16 +29,14 @@ const Controls = () => {
         />
         <button
           className="create-new-btn"
-          onClick={ () => createNewTask(newTaskName)}
+          onClick={ createNewTask}
         >
           Create New Task
         </button>
       </div>
       <div className="actions-container">
-        <input className="selected-task-text" value={ selectedTask?.name || '' } placeholder="Selected Task" readOnly={true} />
-        <button className="move-backword-btn" disabled={!Object.keys(selectedTask).length || selectedTask.stageIndex === 0} onClick={moveTaskBackward}>{`< Move Backword`}</button>
-        <button className="move-forward-btn" disabled={!Object.keys(selectedTask).length || selectedTask.stageIndex === 3} onClick={moveTaskForward}>{`Move Forward >`}</button>
-        <button className="delete-task-btn" disabled={!Object.keys(selectedTask).length} onClick={() => deleteTask()}>Delete Task</button>
+        <input className="selected-task-text" value={ selectedTask?.name || '' } placeholder="Selected Task" readOnly={true} />        
+        <button className="delete-task-btn" disabled={!Object.keys(selectedTask).length} onClick={deleteTask}>Delete Task</button>
       </div>
     </div>
   )
